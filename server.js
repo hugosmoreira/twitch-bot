@@ -1,6 +1,12 @@
 require('dotenv').config();
 
 const tmi = require('tmi.js');
+const say = require('say');
+
+//Speech.setLanguage('pt-BR');
+
+
+
 
 const regexpCommand = new RegExp(/^!([a-zA-Z0-9]+)(?:\W+)?(.*)?/);
 
@@ -19,34 +25,26 @@ const client = new tmi.Client({
 		username: process.env.TWITCH_BOT_USERNAME,
 		password: process.env.TWITCH_BOT_OAUTH_TOKEN
 	},
-	channels: [ 'asterweb3' ]
+	channels: [ 'hugoscode' ]
 });
 
 client.connect();
 
-client.on('message', (channel, tags, message, self) => {
 
-    const isNotBot = tags.username.toLowerCase() !== process.env.TWITCH_BOT_USERNAME.toLowerCase();
+client.on("chat", function (channel, userstate, message, self){
+    say.speak(userstate.username+ "says" + message);
+   
+})
 
-    if (!isNotBot) return;
+client.on('message', (channel, context, message) => {
+    const isNotBot = context.username.toLowerCase() !== process.env.TWITCH_BOT_USERNAME.toLowerCase();
+  
+    if ( !isNotBot ) return;
+  
+    const match = message.match(regexpCommand);
 
-    const [raw, command, argument] = message.match(regexpCommand);
+    if ( !match ) return;
+  
+   
+  });
 
-    const { response } = commands[command] || {};
-
-    if ( typeof response === 'function' ) {
-        client.say(channel, response(argument));
-      } else if ( typeof response === 'string' ) {
-        client.say(channel, response);
-      }
-
-   // if ( command ) {
-   //   client.say(channel, `Command "${command}" found with argument "${argument}"`);
-   // }
-
-    
-        
-    
-	// "Alca: Hello, World!"
-	console.log(`${tags['display-name']}: ${message}`);
-});

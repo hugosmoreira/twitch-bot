@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.0",
+    "say": "^0.16.0",
+    "speak-tts": "^2.0.8",
     "tmi.js": "^1.8.5"
   }
 }
